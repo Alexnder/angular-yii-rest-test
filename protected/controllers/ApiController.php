@@ -30,6 +30,9 @@ class ApiController extends Controller
             case 'posts':
                 $models = Post::model()->findAll();
                 break;
+            case 'users':
+                $models = User::model()->findAll();
+                break;
             default:
                 // Model not implemented error
                 $this->_sendResponse(501, sprintf(
