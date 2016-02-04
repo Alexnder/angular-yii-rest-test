@@ -6,8 +6,6 @@ class UserIdentity extends CUserIdentity
 
     public function authenticate()
     {
-      $hash = CPasswordHelper::hashPassword($this->password);
-
         $record = User::model()->findByAttributes(array('username'=>$this->username));
         if ($record===null)
         {

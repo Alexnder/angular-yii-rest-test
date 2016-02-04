@@ -7,7 +7,7 @@ class UserController extends CController
         $headers = apache_request_headers();
         if (!isset($headers['Authorization']))
         {
-            $this->renderJSONErorr("Authorization is required");
+            Helper::renderJSONErorr("Authorization is required");
         }
 
         $auth = $headers['Authorization'];
@@ -17,12 +17,12 @@ class UserController extends CController
         $token = Token::model()->find('token=:token', array(':token'=>$access_token));
         if (!$token)
         {
-            $this->renderJSONErorr("Bad access_token");
+            Helper::renderJSONErorr("Bad access_token");
         }
 
         $user = User::model()->find('id=:id', array(':id'=>$token->user));
 
-        $this->renderJSON(["id"=>$user->id, "username"=>$user->username]);
+        Helper::renderJSON(["id"=>$user->id, "username"=>$user->username]);
     }
 
     public function actionLogin()
@@ -39,16 +39,16 @@ class UserController extends CController
             $token->token = Yii::app()->getSecurityManager()->generateRandomString(64);
             if ($token->save())
             {
-                $this->renderJSON([
+                Helper::renderJSON([
                     "access_token" => $token->token,
                     "token_type" => "bearer",
                 ]);
             }
-            $this->renderJSONErorr("Internal error");
+            Helper::renderJSONErorr("Internal error");
         }
         else
         {
-            $this->renderJSONErorr($identity->errorMessage);
+            Helper::renderJSONErorr($identity->errorMessage);
         }
     }
 
@@ -59,14 +59,14 @@ class UserController extends CController
 
         if (strlen($password) < 6)
         {
-            $this->renderJSONErorr("Password must be at least 6 symbols");
+            Helper::renderJSONErorr("Password must be at least 6 symbols");
         }
 
         // Check user
         $user = User::model()->find('username=:username', array(':username'=>$username));
         if ($user)
         {
-            $this->renderJSONErorr("Username occupated");
+            Helper::renderJSONErorr("Username occupated");
         }
 
         // Create new user
@@ -75,7 +75,7 @@ class UserController extends CController
         $model->password = CPasswordHelper::hashPassword($password);
         if ($model->save())
         {
-            $this->renderJSON($model);
+            Helper::renderJSON($model);
         }
 
         // Catch errors
@@ -88,26 +88,6 @@ class UserController extends CController
             }
         }
 
-        $this->renderJSONErorr(implode("\n", $errors));
-    }
-
-    protected function renderJSONErorr($data)
-    {
-        $this->renderJSON(["error"=>$data]);
-    }
-
-    protected function renderJSON($data)
-    {
-        header('Content-type: application/json');
-        echo CJSON::encode($data);
-
-        foreach (Yii::app()->log->routes as $route)
-        {
-            if ($route instanceof CWebLogRoute)
-            {
-                $route->enabled = false; // disable any weblogroutes
-            }
-        }
-        Yii::app()->end();
+        Helper::renderJSONErorr(implode("\n", $errors));
     }
 }
