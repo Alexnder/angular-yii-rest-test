@@ -4,23 +4,7 @@ class UserController extends CController
 {
     public function actionIndex()
     {
-        $headers = apache_request_headers();
-        if (!isset($headers['Authorization']))
-        {
-            Helper::renderJSONErorr("Authorization is required");
-        }
-
-        $auth = $headers['Authorization'];
-        $access_token = explode(' ', $auth);
-        $access_token = end($access_token);
-
-        $token = Token::model()->find('token=:token', array(':token'=>$access_token));
-        if (!$token)
-        {
-            Helper::renderJSONErorr("Bad access_token");
-        }
-
-        $user = User::model()->find('id=:id', array(':id'=>$token->user));
+        $user = Helper::getUser();
 
         Helper::renderJSON(["id"=>$user->id, "username"=>$user->username]);
     }

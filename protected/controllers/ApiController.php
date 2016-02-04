@@ -2,20 +2,6 @@
 
 class ApiController extends Controller
 {
-    // Members
-    /**
-     * Key which has to be in HTTP USERNAME and PASSWORD headers
-     */
-    Const APPLICATION_ID = 'ASCCPE';
-
-    /**
-     * Default response format
-     * either 'json' or 'xml'
-     */
-    private $format = 'json';
-    /**
-     * @return array action filters
-     */
     public function filters()
     {
         return array();
@@ -27,8 +13,8 @@ class ApiController extends Controller
         // Get the respective model instance
         switch($_GET['model'])
         {
-            case 'posts':
-                $models = Post::model()->findAll();
+            case 'articles':
+                $models = Article::model()->findAll();
                 break;
             case 'users':
                 $models = User::model()->findAll();
@@ -64,8 +50,8 @@ class ApiController extends Controller
         switch($_GET['model'])
         {
             // Find respective model
-            case 'posts':
-                $model = Post::model()->findByPk($_GET['id']);
+            case 'articles':
+                $model = Article::model()->findByPk($_GET['id']);
                 break;
             default:
                 $this->_sendResponse(501, sprintf(
@@ -82,11 +68,13 @@ class ApiController extends Controller
 
     public function actionCreate()
     {
+        $author = $this->_checkAuth();
+
         switch($_GET['model'])
         {
             // Get an instance of the respective model
-            case 'posts':
-                $model = new Post;
+            case 'articles':
+                $model = new Article;
                 break;
             default:
                 $this->_sendResponse(501,
@@ -94,16 +82,26 @@ class ApiController extends Controller
                     $_GET['model']) );
                     Yii::app()->end();
         }
-        // Try to assign POST values to attributes
-        foreach($_POST as $var=>$value) {
+
+        foreach ($_POST as $var => $value) {
             // Does the model have this attribute? If not raise an error
-            if($model->hasAttribute($var))
+            if ($model->hasAttribute($var))
+            {
                 $model->$var = $value;
+            }
             else
+            {
                 $this->_sendResponse(500,
                     sprintf('Parameter <b>%s</b> is not allowed for model <b>%s</b>', $var,
                     $_GET['model']) );
+            }
         }
+
+        if ($model->hasAttribute('author'))
+        {
+            $model->author = $author->id;
+        }
+
         // Try to save the model
         if($model->save())
             $this->_sendResponse(200, CJSON::encode($model));
@@ -133,8 +131,8 @@ class ApiController extends Controller
         switch($_GET['model'])
         {
             // Find respective model
-            case 'posts':
-                $model = Post::model()->findByPk($_GET['id']);
+            case 'articles':
+                $model = Article::model()->findByPk($_GET['id']);
                 break;
             default:
                 $this->_sendResponse(501,
@@ -174,8 +172,8 @@ class ApiController extends Controller
         switch($_GET['model'])
         {
             // Load the respective model
-            case 'posts':
-                $model = Post::model()->findByPk($_GET['id']);
+            case 'articles':
+                $model = Article::model()->findByPk($_GET['id']);
                 break;
             default:
                 $this->_sendResponse(501,
@@ -283,21 +281,12 @@ class ApiController extends Controller
 
     private function _checkAuth()
     {
-        // Check if we have the USERNAME and PASSWORD HTTP headers set?
-        if(!(isset($_SERVER['HTTP_X_USERNAME']) and isset($_SERVER['HTTP_X_PASSWORD']))) {
-            // Error: Unauthorized
-            $this->_sendResponse(401);
+        $user = Helper::getUser();
+        if (!$user)
+        {
+            Helper::renderJSONErorr("Internal user error");
         }
-        $username = $_SERVER['HTTP_X_USERNAME'];
-        $password = $_SERVER['HTTP_X_PASSWORD'];
-        // Find the user
-        $user=User::model()->find('LOWER(username)=?',array(strtolower($username)));
-        if($user===null) {
-            // Error: Unauthorized
-            $this->_sendResponse(401, 'Error: User Name is invalid');
-        } else if(!$user->validatePassword($password)) {
-            // Error: Unauthorized
-            $this->_sendResponse(401, 'Error: User Password is invalid');
-        }
+
+        return $user;
     }
 }
