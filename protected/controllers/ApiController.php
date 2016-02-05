@@ -72,7 +72,8 @@ class ApiController extends Controller
                 Helper::renderJSONErorr('create is not implemented for model '.$_GET['model']);
         }
 
-        foreach ($_POST as $var => $value) {
+        foreach ($_POST as $var => $value)
+        {
             if ($model->hasAttribute($var))
             {
                 $model->$var = $value;
@@ -128,9 +129,8 @@ class ApiController extends Controller
             Helper::renderJSONErorr('Error: Didn\'t find any model '.$_GET['model'].' with ID '.$_GET['id']);
         }
 
-        // Try to assign PUT parameters to attributes
-        foreach($put_vars as $var=>$value) {
-            // Does model have this attribute? If not, raise an error
+        foreach ($put_vars as $var=>$value)
+        {
             if ($model->hasAttribute($var))
             {
                 $model->$var = $value;
