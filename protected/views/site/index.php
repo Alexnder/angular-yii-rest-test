@@ -4,17 +4,57 @@
 $this->pageTitle=Yii::app()->name;
 ?>
 
-<h1>Welcome to <i><?php echo CHtml::encode(Yii::app()->name); ?></i></h1>
-
-<p>Congratulations! You have successfully created your Yii application.</p>
-
-<p>You may change the content of this page by modifying the following two files:</p>
-<ul>
-	<li>View file: <code><?php echo __FILE__; ?></code></li>
-	<li>Layout file: <code><?php echo $this->getLayoutFile('main'); ?></code></li>
-</ul>
-
-<p>For more details on how to further develop this application, please read
-the <a href="http://www.yiiframework.com/doc/">documentation</a>.
-Feel free to ask in the <a href="http://www.yiiframework.com/forum/">forum</a>,
-should you have any questions.</p>
+<div class="container">
+  <div class="row row-content" ng-controller="menuController as menuCtrl">
+    <div class="col-xs-12">
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" ng-class="{active:menuCtrl.isSelected(1)}">
+          <a ng-click="menuCtrl.select(1)"
+            aria-controls="all menu"
+          role="tab">
+            The Menu
+          </a>
+        </li>
+        <li role="presentation" ng-class="{active:menuCtrl.isSelected(2)}">
+          <a ng-click="menuCtrl.select(2)"
+            aria-controls="appetizers"
+          role="tab">
+            Appetizers
+          </a>
+        </li>
+        <li role="presentation" ng-class="{active:menuCtrl.isSelected(3)}">
+          <a ng-click="menuCtrl.select(3)"
+            aria-controls="mains"
+          role="tab">
+            Mains
+          </a>
+        </li>
+        <li role="presentation" ng-class="{active:menuCtrl.isSelected(4)}">
+          <a ng-click="menuCtrl.select(4)"
+            aria-controls="desserts"
+          role="tab">
+            Desserts
+          </a>
+        </li>
+      </ul>
+      <div class="tab-content">
+       <ul class="media-list tab-pane fade in active">
+        <li class="media" ng-repeat="dish in menuCtrl.dishes | filter:menuCtrl.filtText">
+          <div class="media-left media-middle">
+            <a href="#">
+              <img class="media-object img-thumbnail"
+              ng-src={{dish.image}} alt="Uthappizza">
+            </a>
+          </div>
+          <div class="media-body">
+            <h2 class="media-heading">{{dish.name}}
+             <span class="label label-danger">{{dish.label}}</span>
+             <span class="badge">{{dish.price | currency}}</span></h2>
+             <p>{{dish.description}}</p>
+           </div>
+         </li>
+       </ul>
+     </div>
+   </div>
+  </div>
+</div>

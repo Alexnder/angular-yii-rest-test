@@ -22,7 +22,8 @@ class Helper
         Yii::app()->end();
     }
 
-    public static function getUser() {
+    public static function getUser()
+    {
         $headers = apache_request_headers();
         if (!isset($headers['Authorization']))
         {
