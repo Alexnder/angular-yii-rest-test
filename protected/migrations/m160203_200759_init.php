@@ -26,7 +26,7 @@ class m160203_200759_init extends CDbMigration
 
     $this->insert('tbl_user', array(
       'username' => 'admin',
-      'password' => '$2y$13$QPgXh2X9fGABsLh5OipzreIiOIUWhGwt4cGtSMpvkUf9vA6DNyiKq'
+      'password' => '$2y$13$xrTjL3MSGZztxdNF4uzZ4OAYQ5pyH80dX/aQ7y9FPhNRi/1nVIdHG'
     ));
 	}
 

@@ -18,7 +18,7 @@ class UserController extends CController
 
         if (!$identity->authenticate())
         {
-            Helper::renderJSONErorr("Error:".$identity->errorMessage);
+            Helper::renderJSONErorr("Wrong username or password");
         }
 
         $token = new Token;
@@ -45,9 +45,9 @@ class UserController extends CController
             Helper::renderJSONErorr("Username must be at least 3 symbols: $username [".strlen($username)."]");
         }
 
-        if (strlen($password) < 6)
+        if (strlen($password) < 5)
         {
-            Helper::renderJSONErorr("Password must be at least 6 symbols");
+            Helper::renderJSONErorr("Password must be at least 5 symbols");
         }
 
         // Check user

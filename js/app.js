@@ -22,13 +22,13 @@
         templateUrl: '/public_html/partials/register.html',
         controller: 'RegisterCtrl'
       }).
-      when('/article-create', {
-        templateUrl: '/public_html/partials/article_create.html',
-        controller: 'ArticleCreateCtrl'
-      }).
-      when('/articles/:id', {
+      when('/article/:action', {
         templateUrl: '/public_html/partials/article.html',
-        controller: 'ArticlesCtrl'
+        controller: 'ArticleCtrl'
+      }).
+      when('/article/:action/:id', {
+        templateUrl: '/public_html/partials/article.html',
+        controller: 'ArticleCtrl'
       }).
       otherwise({
         redirectTo: '/login'

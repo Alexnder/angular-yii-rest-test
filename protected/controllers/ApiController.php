@@ -28,7 +28,7 @@ class ApiController extends CController
 
         // Send results
         $rows = array();
-        foreach($models as $model)
+        foreach ($models as $model)
         {
             $rows[] = $model->attributes;
         }
@@ -116,7 +116,8 @@ class ApiController extends CController
         $author = $this->_checkAuth();
 
         $json = file_get_contents('php://input');
-        $data = CJSON::decode($json, true);
+
+        $put_vars = CJSON::decode($json,true);
 
         switch ($_GET['model'])
         {
@@ -132,7 +133,7 @@ class ApiController extends CController
             Helper::renderJSONErorr('Error: Didn\'t find any model '.$_GET['model'].' with ID '.$_GET['id']);
         }
 
-        foreach ($data as $var=>$value)
+        foreach ($put_vars as $var=>$value)
         {
             if ($model->hasAttribute($var))
             {
@@ -144,7 +145,11 @@ class ApiController extends CController
             }
         }
 
-        // TODO: check author
+        // Check access
+        if ($author->id != 1 && (isset($model->author) && $author->id != $model->author))
+        {
+            Helper::renderJSONErorr("You don't have permissions for this action.");
+        }
 
         if ($model->save())
         {
@@ -182,12 +187,16 @@ class ApiController extends CController
             Helper::renderJSONErorr('Didn\'t find any model '.$_GET['model'].' with ID '.$_GET['id']);
         }
 
-        // TODO: check author
+        // Check access
+        if ($author->id != 1 && (isset($model->author) && $author->id != $model->author))
+        {
+            Helper::renderJSONErorr("You don't have permissions for this action.");
+        }
 
         // Delete the model
         if ($model->delete())
         {
-            Helper::renderJSON(true);
+            Helper::renderJSON(["result"=>true]);
         }
 
         Helper::renderJSONErorr('Couldn\'t delete model '.$_GET['model'].' with ID '.$_GET['id']);

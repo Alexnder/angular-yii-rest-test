@@ -7,7 +7,11 @@
   ]);
 
   controllers.factory("Article", function($resource) {
-    return $resource("index.php/api/articles/:id");
+    return $resource("index.php/api/articles/:id",
+      null,
+      {
+          'update': { method:'PUT' }
+      });
   });
 
   controllers.controller('LoginCtrl',
@@ -74,39 +78,73 @@
   controllers.controller('ArticlesCtrl',
     ['$scope', '$routeParams', 'Article',
     function($scope, $routeParams, Article) {
-      $scope.articleId = $routeParams.id;
-
       Article.query(function(data) {
         $scope.articles = data;
       });
   }]);
 
-  controllers.controller('ArticleCreateCtrl',
-    ['$scope', '$rootScope', '$cookies', '$window', '$http', 'Article',
-    function($scope, $rootScope, $cookies, $window, $http, Article) {
+  controllers.controller('ArticleCtrl',
+    ['$scope', '$rootScope', '$routeParams', '$cookies', '$window', '$http', 'Article',
+    function($scope, $rootScope, $routeParams, $cookies, $window, $http, Article) {
       $scope.error = false;
 
+      // Get auth from cookies if need
       if (!$rootScope.accessToken) {
         $rootScope.accessToken = $cookies.get('accessToken');
       }
 
+      // Auth
       $http.defaults.headers.common['Authorization'] = 'Bearer ' + $rootScope.accessToken;
 
-      $scope.article = new Article();
+      // Set view action
+      $scope['action_' + $routeParams.action] = true;
 
+      // If it is exists article
+      if ($routeParams.id) {
+        $scope.article = Article.get({ id: $routeParams.id });
+      } else {
+        $scope.article = new Article();
+      }
+
+      // Create || Update
       $scope.submit = function() {
-        Article.save($scope.article, function(data) {
+        var action = Article.save;
+
+        // Update if need
+        if ($routeParams.action == "edit") {
+          action = Article.update.bind(Article, { id: $routeParams.id });
+        }
+
+        action($scope.article, function(data) {
           if (data.error) {
             $scope.error = data.error;
             return;
           }
+
           $scope.error = false;
+
+          if ($routeParams.action == "edit") {
+            $window.location.href = '#/article/view/' + $routeParams.id;
+            return;
+          }
+
           $window.location.href = '#/';
         });
       };
-      // Article.query(function(data) {
-      //   $scope.articles = data;
-      // });
+
+      // Delete
+      $scope.delete = function() {
+        if ($window.confirm('Are you sure?')) {
+          Article.delete({ id: $routeParams.id }, function(result) {
+            if (!result.error) {
+              $window.location.href = '#/';
+              return;
+            }
+
+            $scope.error = result.error;
+          });
+        }
+      };
   }]);
 
 })();
