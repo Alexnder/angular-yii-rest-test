@@ -82,8 +82,8 @@
   }]);
 
   controllers.controller('ArticleCreateCtrl',
-    ['$scope', '$rootScope', '$cookies', '$http', 'Article',
-    function($scope, $rootScope, $cookies, $http, Article) {
+    ['$scope', '$rootScope', '$cookies', '$window', '$http', 'Article',
+    function($scope, $rootScope, $cookies, $window, $http, Article) {
       $scope.error = false;
 
       if (!$rootScope.accessToken) {
@@ -95,14 +95,13 @@
       $scope.article = new Article();
 
       $scope.submit = function() {
-        console.log("article", $scope.article.title, $scope.article);
-
         Article.save($scope.article, function(data) {
           if (data.error) {
             $scope.error = data.error;
             return;
           }
-          console.log(data);
+          $scope.error = false;
+          $window.location.href = '#/';
         });
       };
       // Article.query(function(data) {
