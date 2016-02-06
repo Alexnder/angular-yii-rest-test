@@ -1,83 +1,33 @@
 (function() {
   'use strict';
 
-  var app = angular.module('myApp',[]);
+  var app = angular.module('myApp', [
+    'ngRoute',
+    'ngResource',
+    'myApp.controllers'
+  ]);
 
-  app.run(['$rootScope', '$injector', function($rootScope,$injector) {
-    $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
-      if ($rootScope.oauth) {
-        headersGetter()['Authorization'] = "Bearer "+$rootScope.oauth.access_token;
-      }
-      if (data) {
-        return angular.toJson(data);
-      }
-    };
+  app.config(['$routeProvider', function($routeProvider) {
+    $routeProvider.
+      when('/login', {
+        templateUrl: '/public_html/partials/login.html',
+        controller: 'LoginCtrl'
+      }).
+      when('/register', {
+        templateUrl: '/public_html/partials/register.html',
+        controller: 'RegisterCtrl'
+      }).
+      when('/articles', {
+        templateUrl: '/public_html/partials/articles.html',
+        controller: 'ArticlesCtrl'
+      }).
+      when('/articles/:id', {
+        templateUrl: '/public_html/partials/article.html',
+        controller: 'ArticlesCtrl'
+      }).
+      otherwise({
+        redirectTo: '/login'
+      });
   }]);
 
-  app.controller('menuController', function() {
-    this.tab = 1;
-    var dishes=[
-    {
-     name:'Uthapizza',
-     image: 'images/uthapizza.png',
-     category: 'mains',
-     label:'Hot',
-     price:'4.99',
-     description:'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.',
-     comment: ''
-   },
-   {
-     name:'Zucchipakoda',
-     image: 'images/zucchipakoda.png',
-     category: 'appetizer',
-     label:'',
-     price:'1.99',
-     description:'Deep fried Zucchini coated with mildly spiced Chickpea flour batter accompanied with a sweet-tangy tamarind sauce',
-     comment: ''
-   },
-   {
-     name:'Vadonut',
-     image: 'images/vadonut.png',
-     category: 'appetizer',
-     label:'New',
-     price:'1.99',
-     description:'A quintessential ConFusion experience, is it a vada or is it a donut?',
-     comment: ''
-   },
-   {
-     name:'ElaiCheese Cake',
-     image: 'images/elaicheesecake.png',
-     category: 'dessert',
-     label:'',
-     price:'2.99',
-     description:'A delectable, semi-sweet New York Style Cheese Cake, with Graham cracker crust and spiced with Indian cardamoms',
-     comment: ''
-   }
-   ];
-
-    this.dishes = dishes;
-
-    this.isSelected = function (checkTab) {
-      return (this.tab === checkTab);
-    };
-
-    this.select = function(setTab) {
-      this.tab = setTab;
-
-      if (setTab === 2) {
-        this.filtText = "appetizer";
-      }
-      else if (setTab === 3) {
-        this.filtText = "mains";
-      }
-      else if (setTab === 4) {
-        this.filtText = "dessert";
-      }
-      else {
-        this.filtText = "";
-      }
-    };
-
-    this.filtText = '';
-  });
 })();

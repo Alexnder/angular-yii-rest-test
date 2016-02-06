@@ -16,30 +16,34 @@ class UserController extends CController
 
         $identity = new UserIdentity($username, $password);
 
-        if ($identity->authenticate())
+        if (!$identity->authenticate())
         {
-            $token = new Token;
-            $token->user = $identity->getId();
-            $token->token = Yii::app()->getSecurityManager()->generateRandomString(64);
-            if ($token->save())
-            {
-                Helper::renderJSON([
-                    "access_token" => $token->token,
-                    "token_type" => "bearer",
-                ]);
-            }
-            Helper::renderJSONErorr("Internal error");
+            Helper::renderJSONErorr("Error:".$identity->errorMessage);
         }
-        else
+
+        $token = new Token;
+        $token->user = $identity->getId();
+        $token->token = Yii::app()->getSecurityManager()->generateRandomString(64);
+        if ($token->save())
         {
-            Helper::renderJSONErorr($identity->errorMessage);
+            Helper::renderJSON([
+                "access_token" => $token->token,
+                "token_type" => "bearer",
+            ]);
         }
+
+        Helper::renderJSONErorr("Internal error");
     }
 
     public function actionRegister()
     {
         $username = $_POST['username'];
         $password = $_POST['password'];
+
+        if (strlen($username) < 3)
+        {
+            Helper::renderJSONErorr("Username must be at least 3 symbols: $username [".strlen($username)."]");
+        }
 
         if (strlen($password) < 6)
         {
