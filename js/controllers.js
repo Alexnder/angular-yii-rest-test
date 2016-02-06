@@ -11,8 +11,8 @@
   });
 
   controllers.controller('LoginCtrl',
-    ['$scope', '$http', '$httpParamSerializerJQLike',
-    function ($scope, $http, $httpParamSerializerJQLike) {
+    ['$scope', '$rootScope', '$cookies', '$http', '$httpParamSerializerJQLike',
+    function ($scope, $rootScope, $cookies, $http, $httpParamSerializerJQLike) {
       $scope.error = false;
 
       $scope.submit = function() {
@@ -32,7 +32,10 @@
             $scope.error = data.error;
             return;
           }
-          $scope.error = data.result;
+
+          $rootScope.accessToken = data.access_token;
+
+          $cookies.put('accessToken', data.access_token);
 
           $scope.success = true;
         });
@@ -76,6 +79,35 @@
       Article.query(function(data) {
         $scope.articles = data;
       });
+  }]);
+
+  controllers.controller('ArticleCreateCtrl',
+    ['$scope', '$rootScope', '$cookies', '$http', 'Article',
+    function($scope, $rootScope, $cookies, $http, Article) {
+      $scope.error = false;
+
+      if (!$rootScope.accessToken) {
+        $rootScope.accessToken = $cookies.get('accessToken');
+      }
+
+      $http.defaults.headers.common['Authorization'] = 'Bearer ' + $rootScope.accessToken;
+
+      $scope.article = new Article();
+
+      $scope.submit = function() {
+        console.log("article", $scope.article.title, $scope.article);
+
+        Article.save($scope.article, function(data) {
+          if (data.error) {
+            $scope.error = data.error;
+            return;
+          }
+          console.log(data);
+        });
+      };
+      // Article.query(function(data) {
+      //   $scope.articles = data;
+      // });
   }]);
 
 })();

@@ -63,6 +63,9 @@ class ApiController extends CController
     {
         $author = $this->_checkAuth();
 
+        $json = file_get_contents('php://input');
+        $data = CJSON::decode($json, true);
+
         switch($_GET['model'])
         {
             case 'articles':
@@ -72,7 +75,7 @@ class ApiController extends CController
                 Helper::renderJSONErorr('create is not implemented for model '.$_GET['model']);
         }
 
-        foreach ($_POST as $var => $value)
+        foreach ($data as $var => $value)
         {
             if ($model->hasAttribute($var))
             {
@@ -113,7 +116,7 @@ class ApiController extends CController
         $author = $this->_checkAuth();
 
         $json = file_get_contents('php://input');
-        $put_vars = CJSON::decode($json, true);
+        $data = CJSON::decode($json, true);
 
         switch ($_GET['model'])
         {
@@ -129,7 +132,7 @@ class ApiController extends CController
             Helper::renderJSONErorr('Error: Didn\'t find any model '.$_GET['model'].' with ID '.$_GET['id']);
         }
 
-        foreach ($put_vars as $var=>$value)
+        foreach ($data as $var=>$value)
         {
             if ($model->hasAttribute($var))
             {

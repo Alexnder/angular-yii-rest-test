@@ -17,13 +17,13 @@
     <nav class="navbar navbar-default">
     <div class="container">
       <div class="navbar-header">
-        <a class="navbar-brand" href="/">Articles</a>
+        <a class="navbar-brand" href="#/">Articles</a>
       </div>
 
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="#about"><i class="fa fa-shield"></i> About</a></li>
-        <li><a href="#contact"><i class="fa fa-comment"></i> Contact</a></li>
+        <li><a href="#/"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="#/login"><i class="fa fa-shield"></i> Login</a></li>
+        <li><a href="#/register"><i class="fa fa-comment"></i> Register</a></li>
       </ul>
     </div>
     </nav>
@@ -34,6 +34,7 @@
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/angular.min.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/angular-route.min.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/angular-resource.min.js"></script>
+	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/angular-cookies.min.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/app.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/controllers.js"></script>
 </body>
