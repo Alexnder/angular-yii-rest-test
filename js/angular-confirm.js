@@ -5,15 +5,15 @@
  * License: Apache
  */
 angular.module('angular-confirm', ['ui.bootstrap'])
-  .controller('ConfirmModalController', ['$scope', '$modalInstance', 'data', function ($scope, $modalInstance, data) {
+  .controller('ConfirmModalController', ['$scope', '$uibModalInstance', 'data', function ($scope, $uibModalInstance, data) {
     $scope.data = angular.copy(data);
 
     $scope.ok = function () {
-      $modalInstance.close();
+      $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
-      $modalInstance.dismiss('cancel');
+      $uibModalInstance.dismiss('cancel');
     };
 
   }])
@@ -31,7 +31,7 @@ angular.module('angular-confirm', ['ui.bootstrap'])
       cancel: 'Cancel'
     }
   })
-  .factory('$confirm', ['$modal', '$confirmModalDefaults', function ($modal, $confirmModalDefaults) {
+  .factory('$confirm', ['$uibModal', '$confirmModalDefaults', function ($uibModal, $confirmModalDefaults) {
     return function (data, settings) {
       settings = angular.extend($confirmModalDefaults, (settings || {}));
 
@@ -47,7 +47,7 @@ angular.module('angular-confirm', ['ui.bootstrap'])
         }
       };
 
-      return $modal.open(settings).result;
+      return $uibModal.open(settings).result;
     };
   }])
   .directive('confirm', ['$confirm', function ($confirm) {

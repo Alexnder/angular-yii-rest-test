@@ -5,6 +5,7 @@
     'ngRoute',
     'ngResource',
     'ngCookies',
+    'angular-confirm',
     'myApp.controllers'
   ]);
 

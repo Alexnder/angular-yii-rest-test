@@ -35,7 +35,7 @@
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/angular-route.min.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/angular-resource.min.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/angular-cookies.min.js"></script>
-	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/ui-bootstrap-1.1.2.min.js"></script>
+	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/ui-bootstrap-tpls-1.1.2.min.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/angular-confirm.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/app.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/controllers.js"></script>

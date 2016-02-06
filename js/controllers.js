@@ -134,16 +134,14 @@
 
       // Delete
       $scope.delete = function() {
-        if ($window.confirm('Are you sure?')) {
-          Article.delete({ id: $routeParams.id }, function(result) {
-            if (!result.error) {
-              $window.location.href = '#/';
-              return;
-            }
+        Article.delete({ id: $routeParams.id }, function(result) {
+          if (!result.error) {
+            $window.location.href = '#/';
+            return;
+          }
 
-            $scope.error = result.error;
-          });
-        }
+          $scope.error = result.error;
+        });
       };
   }]);
 
